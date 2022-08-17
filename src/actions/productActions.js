@@ -20,6 +20,8 @@ import {
 } from '../constants/productConstants';
 import axios from 'axios';
 import Axios from 'axios';
+import { API_URL } from "../config/utils";
+
 
 const listProducts = (
   category = '',
@@ -29,7 +31,7 @@ const listProducts = (
   try {
     dispatch({ type: PRODUCT_LIST_REQUEST });
     const { data } = await axios.get(
-      '/api/products?category=' +
+      `${API_URL}/api/products?category=` +
         category +
         '&searchKeyword=' +
         searchKeyword +
@@ -49,7 +51,7 @@ const saveProduct = (product) => async (dispatch, getState) => {
       userSignin: { userInfo },
     } = getState();
     if (!product._id) {
-      const { data } = await Axios.post('/api/products', product, {
+      const { data } = await Axios.post(`${API_URL}/api/products`, product, {
         headers: {
           Authorization: 'Bearer ' + userInfo.token,
         },
@@ -57,7 +59,7 @@ const saveProduct = (product) => async (dispatch, getState) => {
       dispatch({ type: PRODUCT_SAVE_SUCCESS, payload: data });
     } else {
       const { data } = await Axios.put(
-        '/api/products/' + product._id,
+        `${API_URL}/api/products/` + product._id,
         product,
         {
           headers: {
@@ -75,7 +77,7 @@ const saveProduct = (product) => async (dispatch, getState) => {
 const detailsProduct = (productId) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_DETAILS_REQUEST, payload: productId });
-    const { data } = await axios.get('/api/products/' + productId);
+    const { data } = await axios.get(`${API_URL}/api/products/` + productId);
     dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({ type: PRODUCT_DETAILS_FAIL, payload: error.message });
@@ -89,7 +91,7 @@ const categoryDetails = (name) => async (dispatch) => {
     dispatch({
       type: PRODUCT_CATEGORY_REQUEST, payload: name
     })
-     const { data } = await axios.get(`/api/products/category/${name}`);
+     const { data } = await axios.get(`${API_URL}/api/products/category/${name}`);
 
      console.log("dataaa", data)
     dispatch({ type: PRODUCT_CATEGORY_SUCCESS, payload: data });
@@ -105,7 +107,7 @@ const deleteProdcut = (productId) => async (dispatch, getState) => {
       userSignin: { userInfo },
     } = getState();
     dispatch({ type: PRODUCT_DELETE_REQUEST, payload: productId });
-    const { data } = await axios.delete('/api/products/' + productId, {
+    const { data } = await axios.delete(`${API_URL}/api/products/` + productId, {
       headers: {
         Authorization: 'Bearer ' + userInfo.token,
       },
@@ -125,7 +127,7 @@ const saveProductReview = (productId, review) => async (dispatch, getState) => {
     } = getState();
     dispatch({ type: PRODUCT_REVIEW_SAVE_REQUEST, payload: review });
     const { data } = await axios.post(
-      `/api/products/${productId}/reviews`,
+      `${API_URL}/api/products/${productId}/reviews`,
       review,
       {
         headers: {

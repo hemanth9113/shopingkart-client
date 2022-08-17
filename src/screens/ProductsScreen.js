@@ -6,6 +6,8 @@ import {
   listProducts,
   deleteProdcut,
 } from '../actions/productActions';
+import { API_URL } from "../config/utils";
+
 
 function ProductsScreen(props) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -81,7 +83,7 @@ function ProductsScreen(props) {
     bodyFormData.append('image', file);
     setUploading(true);
     axios
-      .post('/api/uploads', bodyFormData, {
+      .post(`${API_URL}/api/uploads`, bodyFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
