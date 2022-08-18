@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
 import {
   saveProduct,
   listProducts,
   deleteProdcut,
-} from '../actions/productActions';
+} from "../actions/productActions";
 import { API_URL } from "../config/utils";
-
 
 function ProductsScreen(props) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [id, setId] = useState('');
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
-  const [image, setImage] = useState('');
-  const [brand, setBrand] = useState('');
-  const [category, setCategory] = useState('');
-  const [countInStock, setCountInStock] = useState('');
-  const [description, setDescription] = useState('');
+  const [id, setId] = useState("");
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [image, setImage] = useState("");
+  const [brand, setBrand] = useState("");
+  const [category, setCategory] = useState("");
+  const [countInStock, setCountInStock] = useState("");
+  const [description, setDescription] = useState("");
   const [uploading, setUploading] = useState(false);
   const productList = useSelector((state) => state.productList);
   const { loading, products, error } = productList;
+
 
   const productSave = useSelector((state) => state.productSave);
   const {
@@ -77,26 +77,23 @@ function ProductsScreen(props) {
   const deleteHandler = (product) => {
     dispatch(deleteProdcut(product._id));
   };
-  const uploadFileHandler = (e) => {
+
+  const uploadToCloudinary = async (e) => {
     const file = e.target.files[0];
-    const bodyFormData = new FormData();
-    bodyFormData.append('image', file);
-    setUploading(true);
-    axios
-      .post(`${API_URL}/api/uploads`, bodyFormData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      .then((response) => {
-        setImage(response.data);
-        setUploading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setUploading(false);
-      });
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    // replace this with your upload preset name
+    formData.append("upload_preset", process.env.REACT_APP_PRESET);
+
+    // replace cloudname with your Cloudinary cloud_name
+
+    const {data: {secure_url}} = await axios.post("https://api.cloudinary.com/v1_1/dgh6bworz/image/upload", formData)
+    setImage(secure_url)
   };
+
+
   return (
     <div className="content content-margined">
       <div className="product-header">
@@ -146,7 +143,7 @@ function ProductsScreen(props) {
                   id="image"
                   onChange={(e) => setImage(e.target.value)}
                 ></input>
-                <input type="file" onChange={uploadFileHandler}></input>
+                <input type="file" onChange={uploadToCloudinary}></input>
                 {uploading && <div>Uploading...</div>}
               </li>
               <li>
@@ -190,7 +187,7 @@ function ProductsScreen(props) {
               </li>
               <li>
                 <button type="submit" className="button primary">
-                  {id ? 'Update' : 'Create'}
+                  {id ? "Update" : "Create"}
                 </button>
               </li>
               <li>
@@ -230,7 +227,7 @@ function ProductsScreen(props) {
                 <td>
                   <button className="button" onClick={() => openModal(product)}>
                     Edit
-                  </button>{' '}
+                  </button>{" "}
                   <button
                     className="button"
                     onClick={() => deleteHandler(product)}
