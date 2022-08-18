@@ -81,7 +81,7 @@ function HomeScreen(props) {
                 </div>
               </div>
             </li>
-          ))}
+          )).reverse()}
         </ul>
       )}
     </>
